@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070711">
+<title>KJ Studio</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#070711;
+  color:white;
+  min-height:100vh;
+}
+
+.app{
+  width:100%;
+  max-width:520px;
+  margin:auto;
+  min-height:100vh;
+  background:linear-gradient(180deg,#101020,#070711);
+  padding:20px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.logo{
+  font-size:27px;
+  font-weight:800;
+}
+
+.logo span{
+  color:#8b5cf6;
+}
+
+.status{
+  font-size:12px;
+  color:#aaa;
+}
+
+.card{
+  background:#11111f;
+  border:1px solid #24243a;
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+.title{
+  font-size:17px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.display{
+  text-align:center;
+  padding:25px 10px;
+}
+
+.time{
+  font-size:45px;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+.wave{
+  height:55px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:4px;
+  margin:18px 0;
+}
+
+.wave span{
+  width:4px;
+  height:20px;
+  background:#8b5cf6;
+  border-radius:10px;
+  animation:wave 1s infinite ease-in-out;
+  animation-play-state:paused;
+}
+
+.wave.active span{
+  animation-play-state:running;
+}
+
+.wave span:nth-child(2){animation-delay:.1s;height:35px}
+.wave span:nth-child(3){animation-delay:.2s;height:50px}
+.wave span:nth-child(4){animation-delay:.3s;height:30px}
+.wave span:nth-child(5){animation-delay:.4s;height:45px}
+.wave span:nth-child(6){animation-delay:.5s;height:25px}
+.wave span:nth-child(7){animation-delay:.6s;height:40px}
+.wave span:nth-child(8){animation-delay:.7s;height:55px}
+.wave span:nth-child(9){animation-delay:.8s;height:32px}
+.wave span:nth-child(10){animation-delay:.9s;height:45px}
+.wave span:nth-child(11){animation-delay:1s;height:25px}
+
+@keyframes wave{
+  0%,100%{transform:scaleY(.5)}
+  50%{transform:scaleY(1.2)}
+}
+
+.record-btn{
+  width:85px;
+  height:85px;
+  border-radius:50%;
+  border:7px solid #28283d;
+  background:#ef4444;
+  color:white;
+  font-size:28px;
+  display:block;
+  margin:10px auto;
+  cursor:pointer;
+  box-shadow:0 0 30px rgba(239,68,68,.3);
+}
+
+.record-btn.recording{
+  background:#dc2626;
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+  50%{transform:scale(1.08)}
+}
+
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-top:18px;
+}
+
+.btn{
+  border:0;
+  border-radius:13px;
+  padding:13px 20px;
+  background:#222238;
+  color:white;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.btn.primary{
+  background:#8b5cf6;
+}
+
+.btn:active{
+  transform:scale(.96);
+}
+
+.beat{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#19192a;
+  padding:14px;
+  border-radius:14px;
+  margin-top:10px;
+}
+
+.beat-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.beat-icon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:#292946;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+}
+
+.beat-name{
+  font-weight:bold;
+}
+
+.beat-type{
+  font-size:11px;
+  color:#888;
+  margin-top:4px;
+}
+
+.play{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:#8b5cf6;
+  color:white;
+  cursor:pointer;
+}
+
+input[type="range"]{
+  width:100%;
+  accent-color:#8b5cf6;
+}
+
+.volume{
+  margin-top:15px;
+}
+
+.volume-label{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  color:#aaa;
+  margin-bottom:8px;
+}
+
+.recordings{
+  color:#aaa;
+  font-size:14px;
+  text-align:center;
+  padding:15px;
+}
+
+footer{
+  text-align:center;
+  color:#555;
+  font-size:12px;
+  padding:15px 0 25px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <div class="logo">KJ <span>Studio</span></div>
+    <div class="status" id="status">Ready</div>
+  </div>
+
+  <div class="card">
+
+    <div class="title">🎙️ Recording Studio</div>
+
+    <div class="display">
+
+      <div class="time" id="timer">00:00</div>
+
+      <div class="wave" id="wave">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+      </div>
+
+      <button class="record-btn" id="recordBtn">●</button>
+
+      <div class="controls">
+        <button class="btn" onclick="resetStudio()">Reset</button>
+        <button class="btn primary" onclick="saveRecording()">Save</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="title">🎧 Beats</div>
+
+    <div class="beat">
+      <div class="beat-info">
+        <div class="beat-icon">🔥</div>
+        <div>
+          <div class="beat-name">KJ Beat 01</div>
+          <div class="beat-type">Afrobeat • 100 BPM</div>
+        </div>
+      </div>
+
+      <button class="play" onclick="playBeat(this)">▶</button>
+    </div>
+
+    <div class="beat">
+      <div class="beat-info">
+        <div class="beat-icon">🎹</div>
+        <div>
+          <div class="beat-name">KJ Beat 02</div>
+          <div class="beat-type">Chill • 90 BPM</div>
+        </div>
+      </div>
+
+      <button class="play" onclick="playBeat(this)">▶</button>
+    </div>
+
+    <div class="beat">
+      <div class="beat-info">
+        <div class="beat-icon">🥁</div>
+        <div>
+          <div class="beat-name">KJ Beat 03</div>
+          <div class="beat-type">Drill • 140 BPM</div>
+        </div>
+      </div>
+
+      <button class="play" onclick="playBeat(this)">▶</button>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="title">🔊 Volume</div>
+
+    <div class="volume">
+      <div class="volume-label">
+        <span>Beat Volume</span>
+        <span id="volumeText">80%</span>
+      </div>
+
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value="80"
+        id="volume"
+        oninput="changeVolume(this.value)"
+      >
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="title">🎵 My Recordings</div>
+
+    <div class="recordings" id="recordings">
+      No recordings yet
+    </div>
+
+  </div>
+
+  <footer>
+    KJ Studio • Record • Create • Produce
+  </footer>
+
+</div>
+
+<script>
+
+let recording = false;
+let seconds = 0;
+let timerInterval = null;
+let mediaRecorder = null;
+let audioChunks = [];
+let audioURL = null;
+let currentAudio = null;
+
+const recordBtn = document.getElementById("recordBtn");
+const timer = document.getElementById("timer");
+const statusText = document.getElementById("status");
+const wave = document.getElementById("wave");
+const recordings = document.getElementById("recordings");
+
+recordBtn.addEventListener("click", async () => {
+
+  if(!recording){
+    await startRecording();
+  }else{
+    stopRecording();
+  }
+
+});
+
+async function startRecording(){
+
+  try{
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio:true
+    });
+
+    mediaRecorder = new MediaRecorder(stream);
+
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = event => {
+      if(event.data.size > 0){
+        audioChunks.push(event.data);
+      }
+    };
+
+    mediaRecorder.onstop = () => {
+
+      const blob = new Blob(audioChunks,{
+        type:"audio/webm"
+      });
+
+      audioURL = URL.createObjectURL(blob);
+
+      recordings.innerHTML = `
+        <button class="btn primary" onclick="playRecording()">
+          ▶ Play Recording
+        </button>
+      `;
+
+    };
+
+    mediaRecorder.start();
+
+    recording = true;
+
+    recordBtn.classList.add("recording");
+    recordBtn.innerHTML = "■";
+
+    statusText.innerHTML = "Recording...";
+    wave.classList.add("active");
+
+    startTimer();
+
+  }catch(error){
+
+    alert(
+      "Microphone access is required. Please allow microphone permission."
+    );
+
+  }
+
+}
+
+function stopRecording(){
+
+  if(mediaRecorder){
+    mediaRecorder.stop();
+
+    mediaRecorder.stream
+      .getTracks()
+      .forEach(track => track.stop());
+  }
+
+  recording = false;
+
+  recordBtn.classList.remove("recording");
+  recordBtn.innerHTML = "●";
+
+  statusText.innerHTML = "Recording saved";
+  wave.classList.remove("active");
+
+  stopTimer();
+
+}
+
+function startTimer(){
+
+  timerInterval = setInterval(() => {
+
+    seconds++;
+
+    let mins = Math.floor(seconds / 60);
+    let secs = seconds % 60;
+
+    timer.innerHTML =
+      String(mins).padStart(2,"0") +
+      ":" +
+      String(secs).padStart(2,"0");
+
+  },1000);
+
+}
+
+function stopTimer(){
+  clearInterval(timerInterval);
+}
+
+function resetStudio(){
+
+  if(recording){
+    stopRecording();
+  }
+
+  seconds = 0;
+  timer.innerHTML = "00:00";
+
+  statusText.innerHTML = "Ready";
+
+  wave.classList.remove("active");
+
+}
+
+function playRecording(){
+
+  if(!audioURL){
+    return;
+  }
+
+  if(currentAudio){
+    currentAudio.pause();
+  }
+
+  currentAudio = new Audio(audioURL);
+
+  currentAudio.play();
+
+}
+
+function saveRecording(){
+
+  if(!audioURL){
+    alert("Record something first.");
+    return;
+  }
+
+  const link = document.createElement("a");
+
+  link.href = audioURL;
+  link.download = "KJ-Studio-Recording.webm";
+
+  link.click();
+
+}
+
+function playBeat(button){
+
+  const allButtons = document.querySelectorAll(".play");
+
+  allButtons.forEach(btn => {
+    if(btn !== button){
+      btn.innerHTML = "▶";
+    }
+  });
+
+  if(button.innerHTML === "▶"){
+
+    button.innerHTML = "Ⅱ";
+
+    statusText.innerHTML = "Beat playing";
+
+  }else{
+
+    button.innerHTML = "▶";
+
+    statusText.innerHTML = "Ready";
+
+  }
+
+}
+
+function changeVolume(value){
+
+  document.getElementById("volumeText").innerHTML =
+    value + "%";
+
+  if(currentAudio){
+    currentAudio.volume = value / 100;
+  }
+
+}
+
+</script>
+
+</body>
+</html>
