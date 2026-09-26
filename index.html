@@ -1,1468 +1,919 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#08080d">
-<title>KJ Studio 20.0</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  -webkit-tap-highlight-color:transparent;
-}
-
-:root{
-  --bg:#08080d;
-  --panel:#11111a;
-  --panel2:#181824;
-  --line:#29283a;
-  --text:#ffffff;
-  --muted:#8d8b9d;
-  --purple:#9567ff;
-  --purple2:#6e42d8;
-  --red:#f04455;
-  --green:#35d39a;
-}
-
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-button,input,select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-  border:0;
-}
-
-button:active{
-  transform:scale(.96);
-}
-
-.app{
-  max-width:650px;
-  width:100%;
-  min-height:100vh;
-  margin:auto;
-  padding:15px;
-  background:
-    radial-gradient(circle at 50% -10%,#24173f,transparent 40%),
-    var(--bg);
-}
-
-/* HEADER */
-
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
-}
-
-.logo{
-  font-size:28px;
-  font-weight:900;
-  letter-spacing:-1px;
-}
-
-.logo span{
-  color:var(--purple);
-}
-
-.header-actions{
-  display:flex;
-  gap:8px;
-}
-
-.icon-btn{
-  width:42px;
-  height:42px;
-  border-radius:14px;
-  background:var(--panel2);
-  border:1px solid var(--line);
-  color:white;
-  font-size:18px;
-}
-
-/* COMMON */
-
-.panel{
-  background:rgba(17,17,26,.96);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:17px;
-  margin-bottom:14px;
-}
-
-.panel-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
-}
-
-.panel-title{
-  font-size:17px;
-  font-weight:800;
-}
-
-.panel-sub{
-  color:var(--muted);
-  font-size:11px;
-  margin-top:4px;
-}
-
-.small-btn{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  color:white;
-  border-radius:11px;
-  padding:9px 12px;
-  font-size:11px;
-}
-
-/* MAIN DECK */
-
-.deck{
-  background:
-    linear-gradient(145deg,#171329,#0d0d16 65%);
-  border:1px solid #33294c;
-  border-radius:28px;
-  padding:19px 15px;
-  margin-bottom:14px;
-  box-shadow:0 25px 70px rgba(0,0,0,.3);
-}
-
-.deck-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.deck-label{
-  font-size:10px;
-  letter-spacing:2px;
-  color:#aaa1c0;
-}
-
-.live{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  color:var(--green);
-  font-size:11px;
-}
-
-.live-dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:var(--green);
-}
-
-.live.recording .live-dot{
-  background:var(--red);
-  animation:blink 1s infinite;
-}
-
-@keyframes blink{
-  50%{opacity:.2}
-}
-
-.timer{
-  text-align:center;
-  font-size:57px;
-  font-weight:900;
-  letter-spacing:2px;
-  margin:25px 0 14px;
-}
-
-.timer-label{
-  text-align:center;
-  color:#777185;
-  font-size:10px;
-  letter-spacing:2px;
-}
-
-/* WAVEFORM */
-
-.waveform{
-  height:100px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  overflow:hidden;
-  margin:8px 0;
-}
-
-.waveform span{
-  width:5px;
-  min-height:8px;
-  background:var(--purple2);
-  border-radius:8px;
-  opacity:.8;
-}
-
-.waveform.active span{
-  animation:wave .7s infinite alternate ease-in-out;
-}
-
-.waveform span:nth-child(2n){
-  animation-delay:.1s;
-}
-
-.waveform span:nth-child(3n){
-  animation-delay:.2s;
-}
-
-@keyframes wave{
-  from{transform:scaleY(.4);opacity:.4}
-  to{transform:scaleY(1.2);opacity:1}
-}
-
-/* RECORD BUTTON */
-
-.record-area{
-  display:flex;
-  justify-content:center;
-  margin:8px 0 18px;
-}
-
-.record-btn{
-  width:88px;
-  height:88px;
-  border-radius:50%;
-  background:var(--red);
-  color:white;
-  font-size:26px;
-  border:8px solid #292438;
-  box-shadow:
-    0 0 0 5px #171522,
-    0 0 35px rgba(240,68,85,.25);
-}
-
-.record-btn.recording{
-  animation:recordPulse 1.1s infinite;
-}
-
-@keyframes recordPulse{
-  50%{
-    box-shadow:
-      0 0 0 5px #171522,
-      0 0 50px rgba(240,68,85,.6);
-  }
-}
-
-.deck-controls{
-  display:grid;
-  grid-template-columns:1fr 1.5fr 1fr;
-  gap:8px;
-}
-
-.control-btn{
-  height:46px;
-  border-radius:14px;
-  background:#211d30;
-  color:white;
-  border:1px solid #342c49;
-  font-size:17px;
-}
-
-.control-btn.main{
-  background:var(--purple);
-  border-color:var(--purple);
-  font-size:12px;
-  font-weight:800;
-}
-
-/* BEAT PLAYER */
-
-.beat-card{
-  background:#181722;
-  border:1px solid var(--line);
-  border-radius:19px;
-  padding:14px;
-}
-
-.beat-top{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.beat-art{
-  width:56px;
-  height:56px;
-  flex-shrink:0;
-  border-radius:16px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:26px;
-  background:linear-gradient(145deg,#38235e,#171226);
-}
-
-.beat-info{
-  min-width:0;
-  flex:1;
-}
-
-.beat-name{
-  font-size:14px;
-  font-weight:800;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.beat-meta{
-  color:var(--muted);
-  font-size:11px;
-  margin-top:6px;
-}
-
-.beat-play{
-  width:48px;
-  height:48px;
-  flex-shrink:0;
-  border-radius:50%;
-  background:var(--purple);
-  color:white;
-  font-size:18px;
-}
-
-.progress{
-  height:6px;
-  width:100%;
-  border-radius:10px;
-  background:#302b42;
-  overflow:hidden;
-  margin-top:15px;
-}
-
-.progress-fill{
-  width:0%;
-  height:100%;
-  background:var(--purple);
-}
-
-.time-row{
-  display:flex;
-  justify-content:space-between;
-  color:#6e687c;
-  font-size:10px;
-  margin-top:7px;
-}
-
-.file-input{
-  width:100%;
-  margin-top:11px;
-  padding:12px;
-  border-radius:13px;
-  border:1px dashed #403650;
-  background:#15131f;
-  color:#9b94ab;
-  font-size:12px;
-}
-
-/* BPM */
-
-.bpm-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.bpm-display{
-  font-size:30px;
-  font-weight:900;
-}
-
-.bpm-display small{
-  font-size:11px;
-  color:var(--muted);
-  font-weight:normal;
-}
-
-.bpm-controls{
-  display:flex;
-  gap:7px;
-}
-
-.bpm-btn{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  background:var(--panel2);
-  color:white;
-  border:1px solid var(--line);
-  font-size:18px;
-}
-
-.bpm-slider{
-  width:100%;
-  margin-top:15px;
-  accent-color:var(--purple);
-}
-
-.metro-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:15px;
-}
-
-.metro-label{
-  color:var(--muted);
-  font-size:12px;
-}
-
-.toggle{
-  width:46px;
-  height:26px;
-  border-radius:20px;
-  background:#302b42;
-  position:relative;
-  transition:.2s;
-}
-
-.toggle:after{
-  content:"";
-  width:20px;
-  height:20px;
-  background:white;
-  border-radius:50%;
-  position:absolute;
-  left:3px;
-  top:3px;
-  transition:.2s;
-}
-
-.toggle.on{
-  background:var(--purple);
-}
-
-.toggle.on:after{
-  left:23px;
-}
-
-/* MIXER */
-
-.mixer{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.channel{
-  background:#181722;
-  border:1px solid var(--line);
-  border-radius:17px;
-  padding:14px;
-}
-
-.channel-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:13px;
-}
-
-.channel-name{
-  font-size:12px;
-  font-weight:800;
-}
-
-.channel-value{
-  color:var(--purple);
-  font-size:11px;
-}
-
-.channel-meter{
-  height:8px;
-  border-radius:10px;
-  background:#302b42;
-  overflow:hidden;
-  margin-bottom:13px;
-}
-
-.channel-meter-fill{
-  width:80%;
-  height:100%;
-  background:var(--purple);
-}
-
-input[type="range"]{
-  width:100%;
-  accent-color:var(--purple);
-}
-
-/* EFFECTS */
-
-.effects{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-
-.effect{
-  padding:13px 5px;
-  border-radius:15px;
-  background:#181722;
-  border:1px solid var(--line);
-  color:white;
-  font-size:11px;
-}
-
-.effect.active{
-  background:#302050;
-  border-color:var(--purple);
-  color:#d7c8ff;
-}
-
-.effect-icon{
-  display:block;
-  font-size:20px;
-  margin-bottom:8px;
-}
-
-/* TRIM */
-
-.trim-row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.trim-row input{
-  width:100%;
-  accent-color:var(--purple);
-}
-
-.trim-time{
-  font-size:11px;
-  color:var(--muted);
-  white-space:nowrap;
-}
-
-/* TRACK RESULT */
-
-.track-result{
-  display:none;
-}
-
-.track-result.show{
-  display:block;
-}
-
-.track-name{
-  font-size:13px;
-  font-weight:800;
-  margin-bottom:12px;
-}
-
-audio{
-  width:100%;
-  height:40px;
-}
-
-/* TOOLS */
-
-.tools{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:9px;
-}
-
-.tool{
-  min-height:72px;
-  border-radius:18px;
-  background:#11111a;
-  border:1px solid var(--line);
-  color:white;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  gap:8px;
-}
-
-.tool-icon{
-  font-size:22px;
-}
-
-.tool-text{
-  color:var(--muted);
-  font-size:10px;
-}
-
-/* LIBRARY */
-
-.library-list{
-  display:none;
-}
-
-.library-list.show{
-  display:block;
-}
-
-.library-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  background:#181722;
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:12px;
-  margin-top:9px;
-}
-
-.library-item span{
-  font-size:12px;
-  font-weight:700;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.library-item button{
-  background:var(--purple);
-  color:white;
-  border-radius:10px;
-  padding:8px 12px;
-  font-size:11px;
-}
-
-/* MODAL */
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:50;
-  background:rgba(0,0,0,.75);
-  padding:18px;
-  align-items:flex-end;
-  justify-content:center;
-}
-
-.modal.show{
-  display:flex;
-}
-
-.modal-box{
-  width:100%;
-  max-width:620px;
-  border-radius:25px 25px 18px 18px;
-  background:#12111c;
-  border:1px solid #342d49;
-  padding:20px;
-}
-
-.modal-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.modal-head strong{
-  font-size:18px;
-}
-
-.close-btn{
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  background:#29243a;
-  color:white;
-}
-
-.modal-line{
-  padding:14px 0;
-  border-top:1px solid #2a2639;
-  color:#aaa3b8;
-  font-size:13px;
-}
-
-/* FOOTER */
-
-footer{
-  text-align:center;
-  color:#514b60;
-  font-size:10px;
-  padding:18px 0 5px;
-}
-
-@media(max-width:360px){
-
-  .app{
-    padding:11px;
-  }
-
-  .timer{
-    font-size:48px;
-  }
-
-  .waveform{
-    gap:3px;
-  }
-
-  .waveform span{
-    width:4px;
-  }
-
-}
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-<!-- HEADER -->
-
-<header class="header">
-
-  <div class="logo">
-    KJ <span>Studio</span>
-  </div>
-
-  <div class="header-actions">
-
-    <button
-      class="icon-btn"
-      id="settingsBtn">
-      ⚙️
-    </button>
-
-  </div>
-
-</header>
-
-
-<!-- MAIN RECORDING DECK -->
-
-<section class="deck">
-
-  <div class="deck-top">
-
-    <div class="deck-label">
-      KJ RECORDING DECK
-    </div>
-
-    <div
-      class="live"
-      id="liveStatus">
-
-      <span class="live-dot"></span>
-      READY
-
     </div>
 
   </div>
-
-
-  <div
-    class="timer"
-    id="timer">
-    00:00
-  </div>
-
-  <div class="timer-label">
-    RECORDING TIME
-  </div>
-
-
-  <div
-    class="waveform"
-    id="waveform">
-
-    <span style="height:20px"></span>
-    <span style="height:35px"></span>
-    <span style="height:50px"></span>
-    <span style="height:30px"></span>
-    <span style="height:65px"></span>
-    <span style="height:42px"></span>
-    <span style="height:75px"></span>
-    <span style="height:50px"></span>
-    <span style="height:28px"></span>
-    <span style="height:60px"></span>
-    <span style="height:40px"></span>
-    <span style="height:70px"></span>
-    <span style="height:32px"></span>
-    <span style="height:55px"></span>
-    <span style="height:24px"></span>
-    <span style="height:45px"></span>
-    <span style="height:67px"></span>
-    <span style="height:35px"></span>
-    <span style="height:53px"></span>
-    <span style="height:25px"></span>
-    <span style="height:65px"></span>
-    <span style="height:37px"></span>
-    <span style="height:58px"></span>
-    <span style="height:30px"></span>
-    <span style="height:47px"></span>
-    <span style="height:22px"></span>
-    <span style="height:60px"></span>
-    <span style="height:40px"></span>
-    <span style="height:52px"></span>
-    <span style="height:28px"></span>
-
-  </div>
-
-
-  <div class="record-area">
-
-    <button
-      class="record-btn"
-      id="recordBtn">
-      ●
-    </button>
-
-  </div>
-
-
-  <div class="deck-controls">
-
-    <button
-      class="control-btn"
-      id="resetBtn">
-      ↺
-    </button>
-
-    <button
-      class="control-btn main"
-      id="recordText">
-      START RECORDING
-    </button>
-
-    <button
-      class="control-btn"
-      id="saveBtn">
-      ↓
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- BEAT PLAYER -->
-
-<section class="panel">
-
-  <div class="panel-head">
-
-    <div>
-      <div class="panel-title">
-        🎵 Beat Player
-      </div>
-
-      <div class="panel-sub">
-        Load an instrumental from your phone
-      </div>
-    </div>
-
-    <button
-      class="small-btn"
-      id="clearBeat">
-      Clear
-    </button>
-
-  </div>
-
-
-  <div class="beat-card">
-
-    <div class="beat-top">
-
-      <div class="beat-art">
-        🎧
-      </div>
-
-      <div class="beat-info">
-
-        <div
-          class="beat-name"
-          id="beatName">
-          No beat selected
-        </div>
-
-        <div
-          class="beat-meta"
-          id="beatMeta">
-          Ready for your instrumental
-        </div>
-
-      </div>
-
-      <button
-        class="beat-play"
-        id="playBtn">
-        ▶
-      </button>
-
-    </div>
-
-
-    <div class="progress">
-
-      <div
-        class="progress-fill"
-        id="progressFill">
-      </div>
-
-    </div>
-
-
-    <div class="time-row">
-
-      <span id="currentTime">
-        00:00
-      </span>
-
-      <span id="duration">
-        00:00
-      </span>
-
-    </div>
-
-  </div>
-
-
-  <input
-    class="file-input"
-    type="file"
-    id="beatInput"
-    accept="audio/*">
-
-</section>
-
-
-<!-- BPM AND METRONOME -->
-
-<section class="panel">
-
-  <div class="panel-head">
-
-    <div>
-      <div class="panel-title">
-        ⏱️ Tempo
-      </div>
-
-      <div class="panel-sub">
-        Set your beat speed
-      </div>
-    </div>
-
-  </div>
-
-
-  <div class="bpm-row">
-
-    <div class="bpm-display">
-
-      <span id="bpmValue">
-        100
-      </span>
-
-      <small>BPM</small>
-
-    </div>
-
-
-    <div class="bpm-controls">
-
-      <button
-        class="bpm-btn"
-        id="bpmDown">
-        −
-      </button>
-
-      <button
-        class="bpm-btn"
-        id="bpmUp">
-        +
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <input
-    class="bpm-slider"
-    type="range"
-    id="bpmSlider"
-    min="40"
-    max="220"
-    value="100">
-
-
-  <div class="metro-row">
-
-    <div class="metro-label">
-      🔔 Metronome
-    </div>
-
-    <button
-      class="toggle"
-      id="metroToggle">
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- MIXER -->
-
-<section class="panel">
-
-  <div class="panel-head">
-
-    <div>
-      <div class="panel-title">
-        🎚️ Mixer
-      </div>
-
-      <div class="panel-sub">
-        Control your beat and vocal levels
-      </div>
-    </div>
-
-  </div>
-
-
-  <div class="mixer">
-
-    <div class="channel">
-
-      <div class="channel-head">
-
-        <div class="channel-name">
-          🎵 BEAT
-        </div>
-
-        <div
-          class="channel-value"
-          id="beatValue">
-          80%
-        </div>
-
-      </div>
-
-
-      <div class="channel-meter">
-
-        <div
-          class="channel-meter-fill"
-          id="beatMeter">
-        </div>
-
-      </div>
-
-
-      <input
-        type="range"
-        id="beatVolume"
-        min="0"
-        max="100"
-        value="80">
-
-    </div>
-
-
-    <div class="channel">
-
-      <div class="channel-head">
-
-        <div class="channel-name">
-          🎙️ VOCAL
-        </div>
-
-        <div
-          class="channel-value"
-          id="vocalValue">
-          100%
-        </div>
-
-      </div>
-
-
-      <div class="channel-meter">
-
-        <div
-          class="channel-meter-fill"
-          id="vocalMeter">
-        </div>
-
-      </div>
-
-
-      <input
-        type="range"
-        id="vocalVolume"
-        min="0"
-        max="100"
-        value="100">
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- EFFECTS -->
-
-<section class="panel">
-
-  <div class="panel-head">
-
-    <div>
-      <div class="panel-title">
-        ✨ Vocal Effects
-      </div>
-
-      <div class="panel-sub">
-        Choose an effect for your recording
-      </div>
-    </div>
-
-  </div>
-
-
-  <div class="effects">
-
-    <button
-      class="effect"
-      data-effect="reverb">
-
-      <span class="effect-icon">
-        🌌
-      </span>
-
-      Reverb
-
-    </button>
-
-
-    <button
-      class="effect"
-      data-effect="echo">
-
-      <span class="effect-icon">
-        🔁
-      </span>
-
-      Echo
-
-    </button>
-
-
-    <button
-      class="effect"
-      data-effect="bass">
-
-      <span class="effect-icon">
-        🔊
-      </span>
-
-      Bass Boost
-
-    </button>
-
-
-    <button
-      class="effect"
-      data-effect="clean">
-
-      <span class="effect-icon">
-        ✨
-      </span>
-
-      Vocal Enhance
-
-    </button>
-
-
-    <button
-      class="effect"
-      data-effect="robot">
-
-      <span class="effect-icon">
-        🤖
-      </span>
-
-      Robot
-
-    </button>
-
-
-    <button
-      class="effect"
-      data-effect="none">
-
-      <span class="effect-icon">
-        ⭕
-      </span>
-
-      Normal
-
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- TRIM -->
-
-<section class="panel">
-
-  <div class="panel-head">
-
-    <div>
-      <div class="panel-title">
-        ✂️ Trim Track
-      </div>
-
-      <div class="panel-sub">
-        Choose the playback start and end points
-      </div>
-    </div>
-
-  </div>
-
-
-  <div class="trim-row">
-
-    <span class="trim-time">
-      Start
-    </span>
-
-    <input
-      type="range"
-      id="trimStart"
-      min="0"
-      max="100"
-      value="0">
-
-    <span
-      class="trim-time"
-      id="trimStartValue">
-      0%
-    </span>
-
-  </div>
-
-
-  <div
-    class="trim-row"
-    style="margin-top:15px;">
-
-    <span class="trim-time">
-      End
-    </span>
-
-    <input
-      type="range"
-      id="trimEnd"
-      min="0"
-      max="100"
-      value="100">
-
-    <span
-      class="trim-time"
-      id="trimEndValue">
-      100%
-    </span>
-
-  </div>
-
-</section>
-
-
-<!-- RECORDING RESULT -->
-
-<section
-  class="panel track-result"
-  id="trackResult">
-
-  <div class="panel-head">
-
-    <div>
-      <div class="panel-title">
-        🎧 Your Track
-      </div>
-
-      <div class="panel-sub">
-        Listen to your latest recording
-      </div>
-    </div>
-
-  </div>
-
-
-  <div
-    class="track-name"
-    id="trackName">
-    KJ Studio Recording
-  </div>
-
-
-  <audio
-    id="recordedAudio"
-    controls>
-  </audio>
-
-</section>
-
-
-<!-- TOOLS -->
-
-<div class="tools">
-
-  <button
-    class="tool"
-    id="libraryBtn">
-
-    <div class="tool-icon">
-      📁
-    </div>
-
-    <div class="tool-text">
-      LIBRARY
-    </div>
-
-  </button>
-
-
-  <button
-    class="tool"
-    id="micBtn">
-
-    <div class="tool-icon">
-      🎙️
-    </div>
-
-    <div class="tool-text">
-      MICROPHONE
-    </div>
-
-  </button>
-
-
-  <button
-    class="tool"
-    id="aboutBtn">
-
-    <div class="tool-icon">
-      ℹ️
-    </div>
-
-    <div class="tool-text">
-      ABOUT
-    </div>
-
-  </button>
-
 </div>
 
+<script>
+/* ================================
+   KJ STUDIO 20.0 — FUNCTION ENGINE
+================================ */
 
-<!-- LIBRARY -->
+let mediaRecorder = null;
+let audioChunks = [];
+let recordingBlob = null;
+let recordingURL = null;
+let recordingStream = null;
+let timerInterval = null;
+let recordingSeconds = 0;
+let isRecording = false;
 
-<section
-  class="panel library-list"
-  id="libraryPanel">
+let beatAudio = new Audio();
+beatAudio.preload = "metadata";
 
-  <div class="panel-head">
+let bpm = 100;
+let metronomeOn = false;
+let metroTimer = null;
 
-    <div class="panel-title">
-      📁 Studio Library
-    </div>
+const $ = id => document.getElementById(id);
 
-    <button
-      class="small-btn"
-      id="closeLibrary">
-      Close
-    </button>
+/* ================================
+   RECORDING
+================================ */
 
-  </div>
+async function startRecording(){
+
+  try{
+
+    recordingStream =
+      await navigator.mediaDevices.getUserMedia({
+        audio:true
+      });
+
+    audioChunks = [];
+
+    let mime = "";
+
+    if(MediaRecorder.isTypeSupported("audio/webm;codecs=opus")){
+      mime = "audio/webm;codecs=opus";
+    }else if(MediaRecorder.isTypeSupported("audio/webm")){
+      mime = "audio/webm";
+    }else{
+      mime = "";
+    }
+
+    mediaRecorder = mime
+      ? new MediaRecorder(recordingStream,{mimeType:mime})
+      : new MediaRecorder(recordingStream);
+
+    mediaRecorder.ondataavailable = e => {
+
+      if(e.data && e.data.size > 0){
+        audioChunks.push(e.data);
+      }
+
+    };
+
+    mediaRecorder.onstop = finishRecording;
+
+    mediaRecorder.start();
+
+    isRecording = true;
+
+    recordingSeconds = 0;
+    updateTimer();
+
+    timerInterval = setInterval(()=>{
+
+      recordingSeconds++;
+      updateTimer();
+
+    },1000);
+
+    $("recordBtn").classList.add("recording");
+    $("waveform").classList.add("active");
+
+    $("liveStatus").classList.add("recording");
+    $("liveStatus").lastChild.textContent = " RECORDING";
+
+    $("recordText").textContent = "STOP RECORDING";
+
+  }catch(error){
+
+    alert(
+      "Microphone access is required.\n\n" +
+      "Please allow microphone permission in your browser."
+    );
+
+    console.error(error);
+
+  }
+
+}
 
 
-  <div id="libraryItems">
+function stopRecording(){
 
-    <div
-      class="panel-sub">
-      No recordings yet.
-    </div>
+  if(!mediaRecorder || mediaRecorder.state === "inactive"){
+    return;
+  }
 
-  </div>
+  mediaRecorder.stop();
 
-</section>
+  if(recordingStream){
+
+    recordingStream.getTracks().forEach(track=>{
+      track.stop();
+    });
+
+  }
+
+  clearInterval(timerInterval);
+
+  isRecording = false;
+
+  $("recordBtn").classList.remove("recording");
+  $("waveform").classList.remove("active");
+
+  $("liveStatus").classList.remove("recording");
+  $("liveStatus").lastChild.textContent = " READY";
+
+  $("recordText").textContent = "START RECORDING";
+
+}
 
 
-<footer>
-  KJ Studio 20.0 • Record • Create • Mix • Produce
-</footer>
+function finishRecording(){
 
-</div>
+  const type =
+    mediaRecorder.mimeType ||
+    "audio/webm";
+
+  recordingBlob =
+    new Blob(audioChunks,{type:type});
+
+  if(recordingURL){
+    URL.revokeObjectURL(recordingURL);
+  }
+
+  recordingURL =
+    URL.createObjectURL(recordingBlob);
+
+  $("recordedAudio").src = recordingURL;
+
+  $("trackResult").classList.add("show");
+
+  addToLibrary(
+    "KJ Studio Recording " +
+    new Date().toLocaleTimeString()
+  );
+
+}
 
 
-<!-- SETTINGS MODAL -->
+/* ================================
+   TIMER
+================================ */
 
-<div
-  class="modal"
-  id="settingsModal">
+function updateTimer(){
 
-  <div class="modal-box">
+  const min =
+    Math.floor(recordingSeconds / 60)
+      .toString()
+      .padStart(2,"0");
 
-    <div class="modal-head">
+  const sec =
+    (recordingSeconds % 60)
+      .toString()
+      .padStart(2,"0");
 
-      <strong>
-        KJ Studio Settings
-      </strong>
+  $("timer").textContent =
+    min + ":" + sec;
 
-      <button
-        class="close-btn"
-        id="closeSettings">
-        ✕
+}
+
+
+/* ================================
+   RECORD BUTTONS
+================================ */
+
+$("recordBtn").addEventListener("click",()=>{
+
+  if(isRecording){
+    stopRecording();
+  }else{
+    startRecording();
+  }
+
+});
+
+
+$("recordText").addEventListener("click",()=>{
+
+  if(isRecording){
+    stopRecording();
+  }else{
+    startRecording();
+  }
+
+});
+
+
+/* ================================
+   RESET
+================================ */
+
+$("resetBtn").addEventListener("click",()=>{
+
+  if(isRecording){
+    stopRecording();
+  }
+
+  recordingSeconds = 0;
+  updateTimer();
+
+  $("trackResult").classList.remove("show");
+
+  $("recordedAudio").pause();
+  $("recordedAudio").removeAttribute("src");
+
+  if(recordingURL){
+    URL.revokeObjectURL(recordingURL);
+    recordingURL = null;
+  }
+
+  recordingBlob = null;
+  audioChunks = [];
+
+});
+
+
+/* ================================
+   DOWNLOAD RECORDING
+================================ */
+
+$("saveBtn").addEventListener("click",()=>{
+
+  if(!recordingBlob){
+
+    alert("Record something first.");
+
+    return;
+  }
+
+  const url =
+    URL.createObjectURL(recordingBlob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+  a.download =
+    "KJ-Studio-Recording-" +
+    Date.now() +
+    ".webm";
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+  setTimeout(()=>{
+    URL.revokeObjectURL(url);
+  },1000);
+
+});
+
+
+/* ================================
+   BEAT PLAYER
+================================ */
+
+$("beatInput").addEventListener("change",function(){
+
+  const file = this.files[0];
+
+  if(!file) return;
+
+  if(beatAudio.src){
+    URL.revokeObjectURL(beatAudio.src);
+  }
+
+  beatAudio.src =
+    URL.createObjectURL(file);
+
+  beatAudio.load();
+
+  $("beatName").textContent =
+    file.name;
+
+  $("beatMeta").textContent =
+    "Instrumental • " +
+    formatBytes(file.size);
+
+});
+
+
+$("playBtn").addEventListener("click",()=>{
+
+  if(!beatAudio.src){
+
+    alert("Select a beat first.");
+
+    return;
+  }
+
+  if(beatAudio.paused){
+
+    beatAudio.play()
+      .then(()=>{
+        $("playBtn").textContent = "❚❚";
+      })
+      .catch(error=>{
+        console.error(error);
+      });
+
+  }else{
+
+    beatAudio.pause();
+
+    $("playBtn").textContent = "▶";
+
+  }
+
+});
+
+
+beatAudio.addEventListener("loadedmetadata",()=>{
+
+  $("duration").textContent =
+    formatTime(beatAudio.duration);
+
+});
+
+
+beatAudio.addEventListener("timeupdate",()=>{
+
+  if(!beatAudio.duration) return;
+
+  const percent =
+    (beatAudio.currentTime /
+    beatAudio.duration) * 100;
+
+  $("progressFill").style.width =
+    percent + "%";
+
+  $("currentTime").textContent =
+    formatTime(beatAudio.currentTime);
+
+});
+
+
+beatAudio.addEventListener("ended",()=>{
+
+  $("playBtn").textContent = "▶";
+
+  $("progressFill").style.width = "0%";
+
+});
+
+
+$("clearBeat").addEventListener("click",()=>{
+
+  beatAudio.pause();
+
+  beatAudio.removeAttribute("src");
+
+  beatAudio.load();
+
+  $("beatInput").value = "";
+
+  $("beatName").textContent =
+    "No beat selected";
+
+  $("beatMeta").textContent =
+    "Ready for your instrumental";
+
+  $("currentTime").textContent =
+    "00:00";
+
+  $("duration").textContent =
+    "00:00";
+
+  $("progressFill").style.width =
+    "0%";
+
+  $("playBtn").textContent = "▶";
+
+});
+
+
+/* ================================
+   BPM
+================================ */
+
+function setBPM(value){
+
+  bpm =
+    Math.max(40,Math.min(220,value));
+
+  $("bpmValue").textContent =
+    bpm;
+
+  $("bpmSlider").value =
+    bpm;
+
+  restartMetronome();
+
+}
+
+
+$("bpmDown").addEventListener("click",()=>{
+
+  setBPM(bpm - 1);
+
+});
+
+
+$("bpmUp").addEventListener("click",()=>{
+
+  setBPM(bpm + 1);
+
+});
+
+
+$("bpmSlider").addEventListener("input",e=>{
+
+  setBPM(Number(e.target.value));
+
+});
+
+
+/* ================================
+   METRONOME
+================================ */
+
+$("metroToggle").addEventListener("click",()=>{
+
+  metronomeOn =
+    !metronomeOn;
+
+  $("metroToggle")
+    .classList.toggle("on",metronomeOn);
+
+  restartMetronome();
+
+});
+
+
+function restartMetronome(){
+
+  if(metroTimer){
+    clearInterval(metroTimer);
+    metroTimer = null;
+  }
+
+  if(!metronomeOn) return;
+
+  const interval =
+    60000 / bpm;
+
+  playClick();
+
+  metroTimer =
+    setInterval(playClick,interval);
+
+}
+
+
+function playClick(){
+
+  try{
+
+    const AudioContext =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if(!AudioContext) return;
+
+    if(!window.kjAudioContext){
+
+      window.kjAudioContext =
+        new AudioContext();
+
+    }
+
+    const ctx =
+      window.kjAudioContext;
+
+    const osc =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
+
+    osc.frequency.value = 900;
+
+    gain.gain.setValueAtTime(
+      0.12,
+      ctx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      ctx.currentTime + 0.08
+    );
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.08);
+
+  }catch(e){}
+
+}
+
+
+/* ================================
+   MIXER
+================================ */
+
+$("beatVolume").addEventListener("input",e=>{
+
+  const value =
+    Number(e.target.value);
+
+  $("beatValue").textContent =
+    value + "%";
+
+  $("beatMeter").style.width =
+    value + "%";
+
+  beatAudio.volume =
+    value / 100;
+
+});
+
+
+$("vocalVolume").addEventListener("input",e=>{
+
+  const value =
+    Number(e.target.value);
+
+  $("vocalValue").textContent =
+    value + "%";
+
+  $("vocalMeter").style.width =
+    value + "%";
+
+});
+
+
+/* ================================
+   EFFECTS
+================================ */
+
+document
+.querySelectorAll(".effect")
+.forEach(button=>{
+
+  button.addEventListener("click",()=>{
+
+    document
+      .querySelectorAll(".effect")
+      .forEach(b=>{
+        b.classList.remove("active");
+      });
+
+    button.classList.add("active");
+
+    const effect =
+      button.dataset.effect;
+
+    console.log(
+      "KJ Studio effect:",
+      effect
+    );
+
+  });
+
+});
+
+
+/* ================================
+   TRIM CONTROLS
+================================ */
+
+$("trimStart").addEventListener("input",e=>{
+
+  const value =
+    Number(e.target.value);
+
+  $("trimStartValue").textContent =
+    value + "%";
+
+  if(
+    beatAudio.duration &&
+    value < Number($("trimEnd").value)
+  ){
+
+    beatAudio.currentTime =
+      beatAudio.duration *
+      value / 100;
+
+  }
+
+});
+
+
+$("trimEnd").addEventListener("input",e=>{
+
+  let value =
+    Number(e.target.value);
+
+  if(
+    value <= Number($("trimStart").value)
+  ){
+
+    value =
+      Number($("trimStart").value) + 1;
+
+    $("trimEnd").value =
+      value;
+
+  }
+
+  $("trimEndValue").textContent =
+    value + "%";
+
+});
+
+
+beatAudio.addEventListener("timeupdate",()=>{
+
+  if(!beatAudio.duration) return;
+
+  const endPercent =
+    Number($("trimEnd").value);
+
+  const endTime =
+    beatAudio.duration *
+    endPercent / 100;
+
+  if(
+    beatAudio.currentTime >= endTime &&
+    !beatAudio.paused
+  ){
+
+    beatAudio.pause();
+
+    $("playBtn").textContent = "▶";
+
+  }
+
+});
+
+
+/* ================================
+   MICROPHONE TEST
+================================ */
+
+$("micBtn").addEventListener("click",async()=>{
+
+  try{
+
+    const stream =
+      await navigator.mediaDevices.getUserMedia({
+        audio:true
+      });
+
+    stream
+      .getTracks()
+      .forEach(track=>track.stop());
+
+    alert(
+      "🎙️ Microphone is working!\n\n" +
+      "KJ Studio has microphone access."
+    );
+
+  }catch(error){
+
+    alert(
+      "❌ Microphone access was denied.\n\n" +
+      "Allow microphone permission in your browser settings."
+    );
+
+  }
+
+});
+
+
+/* ================================
+   SETTINGS
+================================ */
+
+$("settingsBtn").addEventListener("click",()=>{
+
+  $("settingsModal")
+    .classList.add("show");
+
+});
+
+
+$("closeSettings").addEventListener("click",()=>{
+
+  $("settingsModal")
+    .classList.remove("show");
+
+});
+
+
+$("settingsModal").addEventListener("click",e=>{
+
+  if(e.target === $("settingsModal")){
+
+    $("settingsModal")
+      .classList.remove("show");
+
+  }
+
+});
+
+
+/* ================================
+   ABOUT
+================================ */
+
+$("aboutBtn").addEventListener("click",()=>{
+
+  alert(
+    "KJ Studio 20.0\n\n" +
+    "Record • Create • Mix • Produce\n\n" +
+    "Built by KJ Studio"
+  );
+
+});
+
+
+/* ================================
+   LIBRARY
+================================ */
+
+let library =
+  JSON.parse(
+    localStorage.getItem("kjStudioLibrary") || "[]"
+  );
+
+
+function addToLibrary(name){
+
+  library.unshift({
+    name:name,
+    date:new Date().toLocaleString()
+  });
+
+  library =
+    library.slice(0,20);
+
+  localStorage.setItem(
+    "kjStudioLibrary",
+    JSON.stringify(library)
+  );
+
+  renderLibrary();
+
+}
+
+
+function renderLibrary(){
+
+  const box =
+    $("libraryItems");
+
+  if(!library.length){
+
+    box.innerHTML =
+      '<div class="panel-sub">No recordings yet.</div>';
+
+    return;
+  }
+
+  box.innerHTML = "";
+
+  library.forEach((item,index)=>{
+
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "library-item";
+
+    row.innerHTML = `
+      <span>
+        ${escapeHTML(item.name)}
+      </span>
+
+      <button data-index="${index}">
+        Use
       </button>
+    `;
 
-    </div>
+    box.appendChild(row);
+
+  });
+
+}
 
 
-    <div class="modal-line">
-      Version: KJ Studio 20.0
-    </div>
+$("libraryBtn").addEventListener("click",()=>{
 
-    <div class="modal-line">
-      🎙️ Browser microphone recording
-    </div>
+  $("libraryPanel")
+    .classList.add("show");
 
-    <div class="modal-line">
-      🎵 Local beat playback
-    </div>
+  renderLibrary();
 
-    <div class="modal-line">
-      🎚️ Beat and vocal mixer
-    </div>
+  $("libraryPanel")
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
 
-    <div class="modal-line">
-      💾 Downloadable recordings
- 
+});
+
+
+$("closeLibrary").addEventListener("click",()=>{
+
+  $("libraryPanel")
+    .classList.remove("show");
+
+});
+
+
+/* ================================
+   UTILITIES
+================================ */
+
+function formatTime(seconds){
+
+  if(!isFinite(seconds)){
+    return "00:00";
+  }
+
+  const min =
+    Math.floor(seconds / 60)
+      .toString()
+      .padStart(2,"0");
+
+  const sec =
+    Math.floor(seconds % 60)
+      .toString()
+      .padStart(2,"0");
+
+  return min + ":" + sec;
+
+}
+
+
+function formatBytes(bytes){
+
+  if(bytes < 1024){
+    return bytes + " B";
+  }
+
+  if(bytes < 1024 * 1024){
+    return (bytes / 1024).toFixed(1) + " KB";
+  }
+
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+
+}
+
+
+function escapeHTML(text){
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    text;
+
+  return div.innerHTML;
+
+}
+
+
+/* ================================
+   INITIALIZE
+================================ */
+
+$("beatVolume").dispatchEvent(
+  new Event("input")
+);
+
+$("vocalVolume").dispatchEvent(
+  new Event("input")
+);
+
+$("bpmSlider").dispatchEvent(
+  new Event("input")
+);
+
+renderLibrary();
+
+console.log("KJ Studio 20.0 engine loaded successfully.");
+
+</script>
+
+</body>
+</html>
